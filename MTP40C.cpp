@@ -13,7 +13,7 @@
 #include "MTP40C.h"
 
 // debug flag, development.
-#define MTP40C_DEBUG    1
+// #define MTP40C_DEBUG    1
 
 
 
@@ -208,7 +208,7 @@ uint8_t MTP40C::getSelfCalibrationStatus()
 
 bool MTP40C::setSelfCalibrationHours(uint16_t hrs)
 {
-  if ((hrs < 24) || (hrs < 720)) return false;
+  if ((hrs < 24) || (hrs > 720)) return false;
   uint8_t cmd[7] = { 0xFE, 0x28, 0x6A, 0x64, 0x00, 0x0E, 0xA8 };
   cmd[4] = hrs & 0xFF;
   cmd[5] = hrs / 256;
@@ -235,7 +235,7 @@ uint16_t MTP40C::getSelfCalibrationHours()
 //
 // PRIVATE
 //
-bool MTP40C::request(uint8_t *data, uint8_t cmdlen, uint8_t anslen)
+bool MTP40C::request(uint8_t *data, uint8_t commandLength, uint8_t answerLength)
 {
   // generic or specific address
   if (_useAddress) 
@@ -247,10 +247,10 @@ bool MTP40C::request(uint8_t *data, uint8_t cmdlen, uint8_t anslen)
     data[0] = 0xFE;  // broadcast 
   }
   // calculate CRC of command
-  uint16_t crc = CRC(data, cmdlen - 2);
-  data[cmdlen - 1] = crc / 256;
-  data[cmdlen - 2] = crc & 0xFF;
-  while (cmdlen--)
+  uint16_t crc = CRC(data, commandLength - 2);
+  data[commandLength - 1] = crc / 256;
+  data[commandLength - 2] = crc & 0xFF;
+  while (commandLength--)
   {
 #ifdef MTP40C_DEBUG
     if (*data < 0x10) _ser->print(0);
@@ -264,14 +264,14 @@ bool MTP40C::request(uint8_t *data, uint8_t cmdlen, uint8_t anslen)
   uint32_t start   = millis();
   uint32_t timeout = _timeOut;
   uint8_t i = 0;
-  while (anslen)
+  while (answerLength)
   {
     if (millis() - start > timeout) return false;
     if (_ser->available())
     {
       _buffer[i] = _ser->read();
       i++;
-      anslen--;
+      answerLength--;
     }
   }
   return true;
