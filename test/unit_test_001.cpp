@@ -124,6 +124,33 @@ unittest(test_single_point_correction)
 
 
 
+unittest(test_self_calibration)
+{
+  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s", MTP40C_LIB_VERSION);
+
+  MTP40C sensor = MTP40C(&Serial);
+  assertTrue(sensor.begin());    // default address
+
+  assertFalse(sensor.openSelfCalibration());
+  assertFalse(sensor.closeSelfCalibration());
+  assertEqual(0x02, sensor.getSelfCalibrationStatus());
+}
+
+
+unittest(test_self_calibration_hours)
+{
+  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s", MTP40C_LIB_VERSION);
+
+  MTP40C sensor = MTP40C(&Serial);
+  assertTrue(sensor.begin());    // default address
+
+  assertFalse(sensor.setSelfCalibrationHours(23));
+  assertFalse(sensor.setSelfCalibrationHours(721));
+  assertFalse(sensor.setSelfCalibrationHours(100));
+  assertEqual(0xFFFF, sensor.getSelfCalibrationHours());
+}
+
+
 unittest_main()
 
 // --------
