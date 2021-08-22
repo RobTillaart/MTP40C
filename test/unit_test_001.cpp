@@ -91,9 +91,9 @@ unittest(test_air_pressure)
 
   assertEqual(-999, sensor.getAirPressure());
 
-  assertFalse(sensor.setAirPressureReference(600.0);
-  assertFalse(sensor.setAirPressureReference(1200.0);
-  assertFalse(sensor.setAirPressureReference(1000.0);
+  assertFalse(sensor.setAirPressureReference(600.0));
+  assertFalse(sensor.setAirPressureReference(1200.0));
+  assertFalse(sensor.setAirPressureReference(1000.0));
 }
 
 
@@ -117,27 +117,10 @@ unittest(test_single_point_correction)
 
   assertFalse(sensor.getSinglePointCorrectionReady());
 
-  assertFalse(sensor.setSinglePointCorrection(300.0);
-  assertFalse(sensor.setSinglePointCorrection(6000.0);
-  assertFalse(sensor.setSinglePointCorrection(1000.0);
+  assertFalse(sensor.setSinglePointCorrection(300.0));
+  assertFalse(sensor.setSinglePointCorrection(6000.0));
+  assertFalse(sensor.setSinglePointCorrection(1000.0));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -53,6 +53,8 @@ uint8_t MTP40C::getAddress()
 
 bool MTP40C::setAddress(uint8_t addr)
 {
+  if (address > 247) return false;
+
   uint8_t cmd[11] = { 0xFE, 0x10, 0x04, 0x00, 0x01, 0x00, 0x01, 0x60, 0x00, 0x42, 0x58 };
   cmd[0] = _address;
   cmd[7] = addr;
@@ -93,6 +95,8 @@ float MTP40C::getAirPressure()
 
 bool MTP40C::setAirPressureReference(float apr)
 {
+  if ((apr < 700) || (apr > 1100)) return false;
+
   union
   {
     float value;
@@ -136,6 +140,8 @@ uint16_t MTP40C::getGasConcentration()
 
 bool MTP40C::setSinglePointCorrection(float spc)
 {
+  if ((spc < 400) || (spc > 5000)) return false;
+
   union
   {
     float value;
