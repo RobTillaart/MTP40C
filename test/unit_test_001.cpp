@@ -9,16 +9,28 @@
 //
 
 // supported assertions
+// https://github.com/Arduino-CI/arduino_ci/blob/master/cpp/unittest/Assertion.h#L33-L42
 // ----------------------------
-// assertEqual(expected, actual)
-// assertNotEqual(expected, actual)
-// assertLess(expected, actual)
-// assertMore(expected, actual)
-// assertLessOrEqual(expected, actual)
-// assertMoreOrEqual(expected, actual)
-// assertTrue(actual)
-// assertFalse(actual)
-// assertNull(actual)
+// assertEqual(expected, actual);               // a == b
+// assertNotEqual(unwanted, actual);            // a != b
+// assertComparativeEquivalent(expected, actual);    // abs(a - b) == 0 or (!(a > b) && !(a < b))
+// assertComparativeNotEquivalent(unwanted, actual); // abs(a - b) > 0  or ((a > b) || (a < b))
+// assertLess(upperBound, actual);              // a < b
+// assertMore(lowerBound, actual);              // a > b
+// assertLessOrEqual(upperBound, actual);       // a <= b
+// assertMoreOrEqual(lowerBound, actual);       // a >= b
+// assertTrue(actual);
+// assertFalse(actual);
+// assertNull(actual);
+
+// // special cases for floats
+// assertEqualFloat(expected, actual, epsilon);    // fabs(a - b) <= epsilon
+// assertNotEqualFloat(unwanted, actual, epsilon); // fabs(a - b) >= epsilon
+// assertInfinity(actual);                         // isinf(a)
+// assertNotInfinity(actual);                      // !isinf(a)
+// assertNAN(arg);                                 // isnan(a)
+// assertNotNAN(arg);                              // !isnan(a)
+
 
 
 #include <ArduinoUnitTests.h>
@@ -49,7 +61,84 @@ unittest(test_begin)
     assertFalse(sensor.begin(addr));
   }
   assertTrue(sensor.begin());    // default address
+
+  assertFalse(sensor.isConnected());
 }
+
+
+unittest(test_address)
+{
+  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s", MTP40C_LIB_VERSION);
+
+  MTP40C sensor = MTP40C(&Serial);
+  assertTrue(sensor.begin());    // default address
+
+  assertEqual(0x64, sensor.getAddress());
+  for (int addr = 248; addr < 256; addr++)
+  {
+    assertFalse(sensor.setAddress(addr));
+  }
+  assertFalse(sensor.setAddress(50));
+}
+
+
+unittest(test_air_pressure)
+{
+  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s", MTP40C_LIB_VERSION);
+
+  MTP40C sensor = MTP40C(&Serial);
+  assertTrue(sensor.begin());    // default address
+
+  assertEqual(-999, sensor.getAirPressure());
+
+  assertFalse(sensor.setAirPressureReference(600.0);
+  assertFalse(sensor.setAirPressureReference(1200.0);
+  assertFalse(sensor.setAirPressureReference(1000.0);
+}
+
+
+unittest(test_gas_concentration)
+{
+  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s", MTP40C_LIB_VERSION);
+
+  MTP40C sensor = MTP40C(&Serial);
+  assertTrue(sensor.begin());    // default address
+
+  assertEqual(0, sensor.getGasConcentration());
+}
+
+
+unittest(test_single_point_correction)
+{
+  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s", MTP40C_LIB_VERSION);
+
+  MTP40C sensor = MTP40C(&Serial);
+  assertTrue(sensor.begin());    // default address
+
+  assertFalse(sensor.getSinglePointCorrectionReady());
+
+  assertFalse(sensor.setSinglePointCorrection(300.0);
+  assertFalse(sensor.setSinglePointCorrection(6000.0);
+  assertFalse(sensor.setSinglePointCorrection(1000.0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 unittest_main()

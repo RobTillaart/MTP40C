@@ -35,10 +35,11 @@ The library for the MTP40C CO2 sensor is experimental as not all functionality i
 
 ### Constructors
 
-- **MTP40C(Stream \* str)** constructor. should get a Serial port as parameter e.g. \&Serial
-- **bool begin(uint8_t address = 0x64)** initialize the device, sets the address to communicate to it.
+- **MTP40C(Stream \* str)** constructor. should get a Serial port as parameter e.g. \&Serial, \&Serial1 or a software Serial port.
+- **bool begin(uint8_t address = 0x64)** initialize the device.
+Sets the address to communicate to the sensor.
 Uses the factory default value of 0x64 as default. Values allowed 0..247
-- **bool isConnected()** returns true if the address as set by **begin()** can be found on the 'bus'
+- **bool isConnected()** returns true if the address as set by **begin()** can be found on the Serial 'bus'.
 
 
 ### Configuration
@@ -46,7 +47,7 @@ Uses the factory default value of 0x64 as default. Values allowed 0..247
 - **uint8_t getAddress()** request the address from the device.
 Expect a value from 0 .. 247.
 - **bool setAddress(uint8_t address)** set a new address for the device. 
-Returns false if not successful.
+Returns false if not successful. If set this specific address will be used for the commands.
 
 These address functions are only needed if handling multiple devices. (under test)
 - **void setGenericAddress()** uses the broadcast address 0xFE in all requests.
@@ -65,9 +66,11 @@ Normally this is not needed to set as the default of 1 second is more as long en
 
 - **float getAirPressure()** request air pressure from the device.
 - **bool setAirPressureReference(float apr)** to calibrate the air pressure one can calibrate 
-the sensor with an external device. 
+the sensor with an external device.
+Value should between 700.0 and 1100.0.
 - **uint16_t getGasConcentration()** retuns the CO2 concentration in PPM (parts per million).
 
+Note: there is no **getAirPressureReference()** command documented.
 
 ### Calibration
 
@@ -80,6 +83,7 @@ This takes a relative short time (few minutes) to calibrate the sensor in a know
 gas concentration. 
 
 - **bool setSinglePointCorrection(float spc)** takes several minutes. see datasheet.
+spc should be between 400 and 5000
 - **bool getSinglePointCorrectionReady()** To see if SPC is finished or not.
 
 As far as known the SPC point can not be retrieved from the sensor.
@@ -106,7 +110,6 @@ moments. Valid values are 24 - 720 .
   - self calibration
   - 2nd hardware Serial (MEGA)
 - scanner to get the address of a device
-- ESP32 test.
 
 
 ## Future

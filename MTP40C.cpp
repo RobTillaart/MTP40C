@@ -231,10 +231,6 @@ uint16_t MTP40C::getSelfCalibrationHours()
 //
 bool MTP40C::request(uint8_t *data, uint8_t cmdlen, uint8_t anslen)
 {
-  // calculate CRC of command
-  uint16_t crc = CRC(data, cmdlen - 2);
-  data[cmdlen - 1] = crc / 256;
-  data[cmdlen - 2] = crc & 0xFF;
   // generic or specific address
   if (_useAddress) 
   {
@@ -244,6 +240,10 @@ bool MTP40C::request(uint8_t *data, uint8_t cmdlen, uint8_t anslen)
   {
     data[0] = 0xFE;  // broadcast 
   }
+  // calculate CRC of command
+  uint16_t crc = CRC(data, cmdlen - 2);
+  data[cmdlen - 1] = crc / 256;
+  data[cmdlen - 2] = crc & 0xFF;
   while (cmdlen--)
   {
 #ifdef MTP40C_DEBUG
