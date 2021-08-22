@@ -7,14 +7,20 @@
 
 # MTP40C
 
-Arduino library for MTP40C CO2 + air pressure sensor
+Arduino library for MTP40C CO2 + air pressure sensor.
 
 (include image)
 
 ## Description
 
-The library for the MTP40C CO2 sensor is experimental as not all functionality is tested.
+The library for the MTP40C CO2 sensor is still experimental as not all functionality is tested.
 
+The sensor communicates over a 19200 baud serial interface with a microprocessor. 
+This implies that calls which take up to 25 bytes which is expected to be about 20 milliseconds.
+Performance measurements are planned for the future.
+
+
+### hardware interface
 
 ```
                // TOPVIEW
@@ -116,8 +122,10 @@ moments. Valid values are 24 - 720 .
 
 - test test test test
 - CRC in PROGMEM
+- performance measurements
 - optimize performance
 - optimize memory usage  (buffer)
+- caching? what?
 - serial bus with multiple devices? => diodes
 
 
