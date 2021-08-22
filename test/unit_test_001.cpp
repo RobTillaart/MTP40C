@@ -25,6 +25,7 @@
 
 #include "Arduino.h"
 #include "MTP40C.h"
+#include "SoftwareSerial.h"
 
 
 unittest_setup()
@@ -40,8 +41,14 @@ unittest_teardown()
 unittest(test_begin)
 {
   fprintf(stderr, "MTP40C_LIB_VERSION:\t%s", MTP40C_LIB_VERSION);
-  MTP40C sensor = MTP40C();
-  sensor.begin();
+
+  MTP40C sensor = MTP40C(&Serial);
+
+  for (int addr = 248; addr < 256; addr++)
+  {
+    assertFalse(sensor.begin(addr));
+  }
+  assertTrue(sensor.begin());    // default address
 }
 
 
