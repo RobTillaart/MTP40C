@@ -2,12 +2,13 @@
 //    FILE: MTP40C.h
 //  AUTHOR: Rob Tillaart
 //    DATE: 2021-08-20
-// VERSION: 0.1.0
+// VERSION: 0.1.1
 // PURPOSE: Arduino library for MTP40C CO2 sensor
 //     URL: https://github.com/RobTillaart/MTP40C
 //
 // HISTORY:
 //  0.1.0   2021-08-20  initial version
+//  0.1.1   2021-08-23  added examples, minor fixes
 
 
 #include "MTP40C.h"
@@ -259,20 +260,21 @@ bool MTP40C::request(uint8_t *data, uint8_t commandLength, uint8_t answerLength)
 #else
     _ser->write(*data++);
 #endif
+     yield();  // because baud rate is low!
   }
 
-  uint32_t start   = millis();
-  uint32_t timeout = _timeOut;
+  uint32_t start = millis();
   uint8_t i = 0;
   while (answerLength)
   {
-    if (millis() - start > timeout) return false;
+    if (millis() - start > _timeout) return false;
     if (_ser->available())
     {
       _buffer[i] = _ser->read();
       i++;
       answerLength--;
     }
+    yield();  // because baud rate is low!
   }
   return true;
 }

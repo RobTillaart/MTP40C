@@ -23,6 +23,15 @@ getSelfCalibrationStatus	KEYWORD2
 setSelfCalibrationHours	KEYWORD2
 getSelfCalibrationHours	KEYWORD2
 
+setGenericAddress	KEYWORD2
+setSpecificAddress	KEYWORD2
+useSpecificAddress	KEYWORD2
+
+setTimeout	KEYWORD2
+getTimeout	KEYWORD2
+
 
 # Constants (LITERAL1)
 MTP40C_LIB_VERSION	LITERAL1
+MTP40C_DEFAULT_ADDRESS	LITERAL1
+
