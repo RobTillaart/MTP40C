@@ -2,12 +2,13 @@
 //    FILE: MTP40C.h
 //  AUTHOR: Rob Tillaart
 //    DATE: 2021-08-20
-// VERSION: 0.1.0
+// VERSION: 0.1.1
 // PURPOSE: Arduino library for MTP40C CO2 sensor
 //     URL: https://github.com/RobTillaart/MTP40C
 //
 // HISTORY:
 //  0.1.0   2021-08-20  initial version
+//  0.1.1   2021-08-23  added examples, minor fixes
 
 
 #include "MTP40C.h"
@@ -28,7 +29,12 @@ bool MTP40C::begin(uint8_t address)
 {
   if (address > 247) return false;
 
-  _address = address;
+  _useAddress  = false;
+  _timeout     = 100;
+  _lastRead    = 0;
+  _airPressure = 0;
+  _gasLevel    = 0;
+  _address     = address;
   return isConnected();
 }
 
@@ -45,9 +51,9 @@ uint8_t MTP40C::getAddress()
   uint8_t cmd[8] = { 0xFE, 0x03, 0x14, 0x00, 0x01, 0x00, 0x55, 0xA5 };
   if (request(cmd, 8, 7) )
   {
-   return _buffer[3];
+    return _buffer[3];
   }
-  return 0xFF;
+  return MTP40C_INVALID_ADDRESS;
 }
 
 
@@ -89,7 +95,7 @@ float MTP40C::getAirPressure()
     _airPressure = convert.value;
     return _airPressure;
   }
-  return -999;  // error
+  return MTP40C_INVALID_AIR_PRESSURE;
 }
 
 
@@ -134,7 +140,7 @@ uint16_t MTP40C::getGasConcentration()
     _gasLevel = _buffer[5] *256 + _buffer[4];
     return _gasLevel;
   }
-  return 0;  // out of range to indicate error
+  return MTP40C_INVALID_GAS_LEVEL;
 }
 
 
@@ -259,20 +265,21 @@ bool MTP40C::request(uint8_t *data, uint8_t commandLength, uint8_t answerLength)
 #else
     _ser->write(*data++);
 #endif
+     yield();  // because baud rate is low!
   }
 
-  uint32_t start   = millis();
-  uint32_t timeout = _timeOut;
+  uint32_t start = millis();
   uint8_t i = 0;
   while (answerLength)
   {
-    if (millis() - start > timeout) return false;
+    if (millis() - start > _timeout) return false;
     if (_ser->available())
     {
       _buffer[i] = _ser->read();
       i++;
       answerLength--;
     }
+    yield();  // because baud rate is low!
   }
   return true;
 }
