@@ -17,8 +17,12 @@
 #include "Arduino.h"
 
 
-#define MTP40C_LIB_VERSION          (F("0.1.1"))
-#define MTP40C_DEFAULT_ADDRESS      0x64
+#define MTP40C_LIB_VERSION            (F("0.1.1"))
+#define MTP40C_DEFAULT_ADDRESS        0x64
+#define MTP40C_INVALID_AIR_PRESSURE   0x00
+#define MTP40C_INVALID_GAS_LEVEL      0x00
+#define MTP40C_INVALID_ADDRESS        0xFF
+
 
 
 class MTP40C
@@ -53,8 +57,8 @@ public:
   bool     useSpecificAddress() { return _useAddress; };
 
   // set timeout of serial communication.
-  void     setTimeout(uint32_t to) { _timeout = to; };
-  uint32_t getTimeout()            { return _timeout; };
+  void     setTimeout(uint32_t to = 100) { _timeout = to; };
+  uint32_t getTimeout() { return _timeout; };
 
   uint32_t lastRead() { return _lastRead; };
 

@@ -13,14 +13,17 @@ Arduino library for MTP40C CO2 + air pressure sensor.
 
 ## Description
 
-The library for the MTP40C CO2 sensor is still experimental as not all functionality is tested.
+The library for the MTP40C CO2 sensor is experimental as not all functionality is tested.
 
-The sensor communicates over a 19200 baud serial interface with a microprocessor. 
-This implies that calls which take up to 25 bytes which is expected to be about 20 milliseconds.
-Performance measurements are planned for the future.
+The MTP40C is an NDIR (Non Dispersive InfraRed) CO2 sensor.
+
+The sensor communicates over a 19200 baud serial (TTL) interface with a microprocessor or PC. 
+This implies that calls which can take up to 25 bytes can take as much as about 20 milliseconds.
+
+Detailed performance measurements are planned for the future.
 
 
-### hardware interface
+### Hardware interface
 
 ```
                // TOPVIEW
@@ -35,48 +38,65 @@ Performance measurements are planned for the future.
               +-------------+---+
 ```
 
+| Pin   | Description         |
+|:------|:--------------------|
+| Vin   | 4.2V--5.5V          |
+| GND   | idem                |
+| TX    | Transmit 19200 baud |
+| RX    | Receive 19200 baud  |
+| NC    | Not Connected       |
+
+
 
 ## Interface
 
 
 ### Constructors
 
-- **MTP40C(Stream \* str)** constructor. should get a Serial port as parameter e.g. \&Serial, \&Serial1 or a software Serial port.
+- **MTP40C(Stream \* str)** constructor. should get a Serial port as parameter e.g. \&Serial, \&Serial1 
+or a software Serial port. That Serial port must connect to the sensor. 
 - **bool begin(uint8_t address = 0x64)** initialize the device.
-Sets the address to communicate to the sensor.
-Uses the factory default value of 0x64 as default. Values allowed 0..247
-- **bool isConnected()** returns true if the address as set by **begin()** can be found on the Serial 'bus'.
+Sets the address to communicate to the sensor. Address values allowed 0..247.
+Uses the factory default value of 0x64 when no parameter is given.
+Also resets internal settings.
+- **bool isConnected()** returns true if the address as set by **begin()** or the default address of 0x64
+(decimal 100) can be found on the Serial 'bus'.
 
 
 ### Configuration
 
 - **uint8_t getAddress()** request the address from the device.
 Expect a value from 0 .. 247.
+Returns **MTP40C_INVALID_ADDRESS** (0xFF) if the request fails.
 - **bool setAddress(uint8_t address)** set a new address for the device. 
 Returns false if not successful. If set this specific address will be used for the commands.
 
-These address functions are only needed if handling multiple devices. (under test)
-- **void setGenericAddress()** uses the broadcast address 0xFE in all requests.
-- **void setSpecificAddress()** uses the address specified in **begin()** or **setAddress()**
-to be used in all requests.
+These address functions are only needed if handling multiple devices. (to be tested)
+- **void setGenericAddress()** uses the broadcast address 0xFE in all requests. This is the default behaviour of the library.
+- **void setSpecificAddress()** uses the address specified in **begin()** or **setAddress()** or the default 0x64 
+in all requests.
 - **bool useSpecificAddress()** returns true if the specific address is used.
-Returns false if broadcast address is used.
+Returns false if the generic / broadcast address is used.
 
 The MTP40C library can set a maximum timeout in the communication with the sensor.
-Normally this is not needed to set as the default of 1 second is more as long enough.
-- **void setTimeOut(uint32_t to)** set the timeout.
-- **uint32_t getTimeOut()** get the value set above (Or the default. Time in milliseconds.
+Normally this is not needed to set as the default of 100 milliseconds is long enough.
+- **void setTimeout(uint32_t to = 100)** sets the timeout. If no parameter is given a default timeout of 100 milliseconds is set.
+- **uint32_t getTimeout()** get the value set above or the default. Value returned is time in milliseconds.
 
 
 ### Measurements
 
-- **float getAirPressure()** request air pressure from the device.
+- **float getAirPressure()** returns the air pressure from the device.
+Returns **MTP40C_INVALID_AIR_PRESSURE** (0) in case request fails.
 - **bool setAirPressureReference(float apr)** to calibrate the air pressure one can calibrate 
 the sensor with an external device.
-Value should between 700.0 and 1100.0.
-- **uint16_t getGasConcentration()** retuns the CO2 concentration in PPM (parts per million).
+Value should between 700.0 and 1100.0. 
+The function returns **false** if the parameter is out of range or if the request fails.
+- **uint16_t getGasConcentration()** returns the CO2 concentration in PPM (parts per million).
+The function returns **MTP40C_INVALID_GAS_LEVEL** (0) if the request fails.
 
 Note: there is no **getAirPressureReference()** command documented.
+
 
 ### Calibration
 
@@ -89,8 +109,9 @@ This takes a relative short time (few minutes) to calibrate the sensor in a know
 gas concentration. 
 
 - **bool setSinglePointCorrection(float spc)** takes several minutes. see datasheet.
-spc should be between 400 and 5000
-- **bool getSinglePointCorrectionReady()** To see if SPC is finished or not.
+spc should be between 400 and 5000.
+The function returns **false** if the parameter is out of range or if the request fails.
+- **bool getSinglePointCorrectionReady()** To see if SPC is finished or not. The call also fails if the request fails.
 
 As far as known the SPC point can not be retrieved from the sensor.
 
@@ -109,15 +130,6 @@ moments. Valid values are 24 - 720 .
 - **uint16_t getSelfCalibrationHours()** returns the value set above.
 
 
-## TODO
-
-- examples
-  - setSinglePointCorrection + Pressure
-  - self calibration
-  - 2nd hardware Serial (MEGA)
-- scanner to get the address of a device
-
-
 ## Future
 
 - test test test test
@@ -127,6 +139,7 @@ moments. Valid values are 24 - 720 .
 - optimize memory usage  (buffer)
 - caching? what?
 - serial bus with multiple devices? => diodes
+- add improved error handling. e.g. **MTP40C_REQUEST_FAILS**
 
 
 ## Operations
