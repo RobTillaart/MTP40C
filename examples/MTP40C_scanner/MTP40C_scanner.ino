@@ -28,7 +28,7 @@ void setup()
 
   Serial.println("\tMTP40C ADDRESS SCANNER 0.1.0");
 
-  Serial2.begin(19200);
+  Serial1.begin(19200);
   mtp.setTimeout(50);
   for (int addr = 0; addr < 248; addr += 16)
   {
