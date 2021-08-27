@@ -23,11 +23,11 @@ void setup()
   Serial.begin(115200);
   Serial.println(__FILE__);
 
-  Serial.print("MTP40C_LIB_VERSION:\t");
-  Serial.println(MTP40C_LIB_VERSION);
+  Serial.print("MTP40_LIB_VERSION:\t");
+  Serial.println(MTP40_LIB_VERSION);
 
   Serial1.begin(19200);
-  mtp.begin(MTP40C_DEFAULT_ADDRESS);  
+  mtp.begin(MTP40_DEFAULT_ADDRESS);  
 
   Serial.println("Set air pressure to: ");
   Serial.setTimeout(3000);           // default is 1000 which is rather small.

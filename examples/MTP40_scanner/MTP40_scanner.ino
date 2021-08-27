@@ -1,5 +1,5 @@
 //
-//    FILE: MTP40C_scanner.ino
+//    FILE: MTP40_scanner.ino
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.1.0
 // PURPOSE: demo of MTP40C library
@@ -22,11 +22,11 @@ void setup()
   delay(100);
   Serial.println(__FILE__);
 
-  Serial.print("MTP40C_LIB_VERSION:\t");
-  Serial.println(MTP40C_LIB_VERSION);
+  Serial.print("MTP40_LIB_VERSION:\t");
+  Serial.println(MTP40_LIB_VERSION);
   Serial.println();
 
-  Serial.println("\tMTP40C ADDRESS SCANNER 0.1.0");
+  Serial.println("\tMTP40 ADDRESS SCANNER 0.1.0");
 
   Serial1.begin(19200);
   mtp.setTimeout(50);

@@ -7,26 +7,32 @@
 
 # MTP40C
 
-Arduino library for MTP40C CO2 + air pressure sensor.
+Arduino library for MTP40C and MTP40D CO2 + air pressure sensor.
 
 (include image)
 
 ## Description
 
-The library for the MTP40C CO2 sensor is experimental as not all functionality is tested.
+The library for the MTP40C / MTP40D CO2 sensor is experimental as not all functionality is tested.
 
-The MTP40C is an NDIR (Non Dispersive InfraRed) CO2 sensor.
+BOth the MTP40C and MTP40D sensor is an NDIR (Non Dispersive InfraRed) CO2 sensor.
 
 The sensor communicates over a 19200 baud serial (TTL) interface with a microprocessor or PC. 
 This implies that calls which can take up to 25 bytes can take as much as about 20 milliseconds.
 
 Detailed performance measurements are planned for the future.
 
+The MTP40D has more interface options, I2C, PWM and ALARM. 
+This library does not support the other interfaces for now.
+
 
 ### Hardware interface
 
+
+#### MTP40-C
+
 ```
-               // TOPVIEW
+               TOPVIEW MTP40-C
               +-------------+---+
               |             | O |
     Vin   1 --|             +---+
@@ -38,14 +44,41 @@ Detailed performance measurements are planned for the future.
               +-------------+---+
 ```
 
-| Pin   | Description         |
-|:------|:--------------------|
-| Vin   | 4.2V--5.5V          |
-| GND   | idem                |
-| TX    | Transmit 19200 baud |
-| RX    | Receive 19200 baud  |
-| NC    | Not Connected       |
+| pin  | name  | description         |
+|:----:|:------|:--------------------|
+|  1   | Vin   | 4.2V--5.5V          |
+|  2   | GND   | idem                |
+|  3   | TX    | Transmit 19200 baud |
+|  4   | RX    | Receive 19200 baud  |
+|  5   | NC    | Not Connected       |
 
+
+#### MTP40-D
+
+```
+               TOPVIEW MTP40-D
+              +-------------+
+              |             | 
+    VCC   5 --|             |-- 1 Vin
+    TX    6 --|             |-- 2 GND
+    RX    7 --|             |-- 3 ALARM
+    NC    8 --|             |-- 4 PWM / I2C
+    GND   9 --|             |
+              |             |
+              +-------------+
+```
+
+| pin  | name    | description           |
+|:----:|:--------|:----------------------|
+|  1   | Vin     | 4.2V--5.5V            |
+|  2   | GND     | idem                  |
+|  3   | ALARM   | HIGH above 2000 PPM, LOW below 18000 (hysteresis) |
+|  4   | PWM/I2C | PWM out or I2C select |
+|  5   | VCC_O   | 3V3 out for serial    |
+|  6   | TX      | Transmit 19200 baud   |
+|  7   | RX      | Receive 19200 baud    |
+|  8   | NC      | Not Connected         |
+|  9   | GND     | idem                  |
 
 
 ## Interface
@@ -55,30 +88,34 @@ Detailed performance measurements are planned for the future.
 
 - **MTP40C(Stream \* str)** constructor. should get a Serial port as parameter e.g. \&Serial, \&Serial1 
 or a software Serial port. That Serial port must connect to the sensor. 
+- **MTP40D(Stream \* str)** constructor. should get a Serial port as parameter e.g. \&Serial, \&Serial1 
+or a software Serial port. That Serial port must connect to the sensor. 
 - **bool begin(uint8_t address = 0x64)** initialize the device.
 Sets the address to communicate to the sensor. Address values allowed 0..247.
 Uses the factory default value of 0x64 when no parameter is given.
 Also resets internal settings.
-- **bool isConnected()** returns true if the address as set by **begin()** or the default address of 0x64
-(decimal 100) can be found on the Serial 'bus'.
+- **bool isConnected()** returns true if the address as set by **begin()** 
+or the default address of 0x64 (decimal 100) can be found on the Serial 'bus'.
+- **uint8_t getType()** returns 2 for the MTP40C and 3 for the MTP40D sensor.
 
 
 ### Configuration
 
 - **uint8_t getAddress()** request the address from the device.
 Expect a value from 0 .. 247.
-Returns **MTP40C_INVALID_ADDRESS** (0xFF) if the request fails.
+Returns **MTP40_INVALID_ADDRESS** (0xFF) if the request fails.
 - **bool setAddress(uint8_t address)** set a new address for the device. 
 Returns false if not successful. If set this specific address will be used for the commands.
 
 These address functions are only needed if handling multiple devices. (to be tested)
-- **void setGenericAddress()** uses the broadcast address 0xFE in all requests. This is the default behaviour of the library.
-- **void setSpecificAddress()** uses the address specified in **begin()** or **setAddress()** or the default 0x64 
-in all requests.
+- **void setGenericAddress()** uses the broadcast address 0xFE in all requests. 
+This is the default behaviour of the library.
+- **void setSpecificAddress()** uses the address specified in **begin()** or 
+**setAddress()** or the default 0x64 in all requests.
 - **bool useSpecificAddress()** returns true if the specific address is used.
 Returns false if the generic / broadcast address is used.
 
-The MTP40C library can set a maximum timeout in the communication with the sensor.
+The library can set a maximum timeout in the communication with the sensor.
 Normally this is not needed to set as the default of 100 milliseconds is long enough.
 - **void setTimeout(uint32_t to = 100)** sets the timeout. If no parameter is given a default timeout of 100 milliseconds is set.
 - **uint32_t getTimeout()** get the value set above or the default. Value returned is time in milliseconds.
@@ -87,13 +124,13 @@ Normally this is not needed to set as the default of 100 milliseconds is long en
 ### Measurements
 
 - **float getAirPressure()** returns the air pressure from the device.
-Returns **MTP40C_INVALID_AIR_PRESSURE** (0) in case request fails.
+Returns **MTP40_INVALID_AIR_PRESSURE** (0) in case request fails.
 - **bool setAirPressureReference(float apr)** to calibrate the air pressure one can calibrate 
 the sensor with an external device.
 Value should between 700.0 and 1100.0. 
 The function returns **false** if the parameter is out of range or if the request fails.
 - **uint16_t getGasConcentration()** returns the CO2 concentration in PPM (parts per million).
-The function returns **MTP40C_INVALID_GAS_LEVEL** (0) if the request fails.
+The function returns **MTP40_INVALID_GAS_LEVEL** (0) if the request fails.
 
 Note: there is no **getAirPressureReference()** command documented.
 
@@ -139,7 +176,7 @@ moments. Valid values are 24 - 720 .
 - optimize memory usage  (buffer)
 - caching? what?
 - serial bus with multiple devices? => diodes
-- add improved error handling. e.g. **MTP40C_REQUEST_FAILS**
+- add improved error handling. e.g. **MTP40_REQUEST_FAILS**
 
 
 ## Operations
