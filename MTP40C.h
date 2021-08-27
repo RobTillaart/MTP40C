@@ -83,11 +83,11 @@ protected:
   float    _airPressure = 0;
   uint16_t _gasLevel    = 0;
   uint8_t  _type        = 0xFF;
-};
-
 
   bool     request(uint8_t *data, uint8_t cmdlen, uint8_t anslen);
   uint16_t CRC(uint8_t *data, uint16_t len);
+
+  };
 
 /////////////////////////////////////////////////////////////
 //

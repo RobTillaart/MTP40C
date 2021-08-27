@@ -60,7 +60,7 @@ unittest_teardown()
 
 unittest(test_begin)
 {
-  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s\n", MTP40C_LIB_VERSION);
+  fprintf(stderr, "MTP40_LIB_VERSION:\t%s\n", MTP40_LIB_VERSION);
 
   MTP40C sensor = MTP40C(&Serial);
 
@@ -76,7 +76,7 @@ unittest(test_begin)
 
 unittest(test_address)
 {
-  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s\n", MTP40C_LIB_VERSION);
+  fprintf(stderr, "MTP40_LIB_VERSION:\t%s\n", MTP40_LIB_VERSION);
 
   MTP40C sensor = MTP40C(&Serial);
   // assertTrue(sensor.begin());  blocks!
@@ -92,7 +92,7 @@ unittest(test_address)
 
 unittest(test_air_pressure)
 {
-  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s\n", MTP40C_LIB_VERSION);
+  fprintf(stderr, "MTP40_LIB_VERSION:\t%s\n", MTP40_LIB_VERSION);
 
   MTP40C sensor = MTP40C(&Serial);
   // assertTrue(sensor.begin());    // default address
@@ -107,7 +107,7 @@ unittest(test_air_pressure)
 
 unittest(test_gas_concentration)
 {
-  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s\n", MTP40C_LIB_VERSION);
+  fprintf(stderr, "MTP40_LIB_VERSION:\t%s\n", MTP40_LIB_VERSION);
 
   MTP40C sensor = MTP40C(&Serial);
   // assertTrue(sensor.begin());
@@ -118,7 +118,7 @@ unittest(test_gas_concentration)
 
 unittest(test_single_point_correction)
 {
-  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s\n", MTP40C_LIB_VERSION);
+  fprintf(stderr, "MTP40_LIB_VERSION:\t%s\n", MTP40_LIB_VERSION);
 
   MTP40C sensor = MTP40C(&Serial);
   // assertTrue(sensor.begin());
@@ -133,7 +133,7 @@ unittest(test_single_point_correction)
 
 unittest(test_self_calibration)
 {
-  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s\n", MTP40C_LIB_VERSION);
+  fprintf(stderr, "MTP40_LIB_VERSION:\t%s\n", MTP40_LIB_VERSION);
 
   MTP40C sensor = MTP40C(&Serial);
   // assertTrue(sensor.begin());    // default address
@@ -146,7 +146,7 @@ unittest(test_self_calibration)
 
 unittest(test_self_calibration_hours)
 {
-  fprintf(stderr, "MTP40C_LIB_VERSION:\t%s\n", MTP40C_LIB_VERSION);
+  fprintf(stderr, "MTP40_LIB_VERSION:\t%s\n", MTP40_LIB_VERSION);
 
   MTP40C sensor = MTP40C(&Serial);
   // assertTrue(sensor.begin());    // default address
