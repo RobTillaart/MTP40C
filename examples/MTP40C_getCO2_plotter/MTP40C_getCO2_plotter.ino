@@ -14,9 +14,11 @@
 
 
 #include "MTP40C.h"
+#include "SoftwareSerial.h"
 
+SoftwareSerial sws(6, 7);
 
-MTP40C mtp(&Serial1);   // use hardware Serial1 for MTP40C sensor
+MTP40C mtp(&sws);       // use hardware Serial1 for MTP40C sensor
 
 
 void setup()
@@ -26,7 +28,7 @@ void setup()
   // Serial.print("MTP40_LIB_VERSION:\t");
   // Serial.println(MTP40_LIB_VERSION);
 
-  Serial1.begin(19200);
+  sws.begin(19200);
   mtp.begin(MTP40_DEFAULT_ADDRESS);            // default 0x64
 
   // if (mtp.begin() == false)

@@ -4,7 +4,7 @@
 //  AUTHOR: Rob Tillaart
 //    DATE: 2021-08-20
 // VERSION: 0.1.2
-// PURPOSE: Arduino library for MTP40C + MTP40D CO2 + air pressure sensor
+// PURPOSE: Arduino library for MTP40C + MTP40D CO2 sensor
 //     URL: https://github.com/RobTillaart/MTP40C
 //
 // HISTORY:
@@ -36,7 +36,7 @@ public:
   bool     isConnected();
 
   uint8_t  getAddress();
-  bool     setAddress(uint8_t address);
+  bool     setAddress(uint8_t address = 0x64);  // default
 
   float    getAirPressure();
   bool     setAirPressureReference(float apr);
@@ -73,7 +73,7 @@ public:
 
 protected:
   Stream * _ser;
-  char     _buffer[256];       // datasheet states 256 - why ???
+  uint8_t  _buffer[24];
   uint8_t  _address     = 64;
 
   bool     _useAddress  = false;

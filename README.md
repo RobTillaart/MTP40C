@@ -15,15 +15,20 @@ Arduino library for MTP40C and MTP40D CO2 + air pressure sensor.
 
 The library for the MTP40C / MTP40D CO2 sensor is experimental as not all functionality is tested.
 
-BOth the MTP40C and MTP40D sensor is an NDIR (Non Dispersive InfraRed) CO2 sensor.
+Both the MTP40C and MTP40D sensor is an NDIR (Non Dispersive InfraRed) CO2 sensor.
 
 The sensor communicates over a 19200 baud serial (TTL) interface with a microprocessor or PC. 
 This implies that calls which can take up to 25 bytes can take as much as about 20 milliseconds.
 
+On the other hand this low baud rate implies it will work over relative long distances.
+This signal quality over longer distances is not investigated. 
+
 Detailed performance measurements are planned for the future.
 
 The MTP40D has more interface options, I2C, PWM and ALARM. 
-This library does not support the other interfaces for now.
+This library does not support these other interfaces for now.
+However minimal examples are added to have a starter but these 
+need to be tested if and how well these work.
 
 
 ### Hardware interface
@@ -44,7 +49,7 @@ This library does not support the other interfaces for now.
               +-------------+---+
 ```
 
-| pin  | name  | description         |
+| Pin  | Name  | Description         |
 |:----:|:------|:--------------------|
 |  1   | Vin   | 4.2V--5.5V          |
 |  2   | GND   | idem                |
@@ -68,20 +73,31 @@ This library does not support the other interfaces for now.
               +-------------+
 ```
 
-| pin  | name    | description           |
-|:----:|:--------|:----------------------|
-|  1   | Vin     | 4.2V--5.5V            |
-|  2   | GND     | idem                  |
-|  3   | ALARM   | HIGH above 2000 PPM, LOW below 18000 (hysteresis) |
-|  4   | PWM/I2C | PWM out or I2C select |
-|  5   | VCC_O   | 3V3 out for serial    |
-|  6   | TX      | Transmit 19200 baud   |
-|  7   | RX      | Receive 19200 baud    |
-|  8   | NC      | Not Connected         |
-|  9   | GND     | idem                  |
+| Pin  | Name    | Description                 |
+|:----:|:--------|:----------------------------|
+|  1   | Vin     | 4.2V--5.5V                  |
+|  2   | GND     | idem                        |
+|  3   | ALARM   | HIGH above 2000 PPM,        |
+|      |         | LOW below 1800 (hysteresis) |
+|  4   | PWM/I2C | PWM out or I2C select       |
+|  5   | VCC_O   | 3V3 out for serial          |
+|  6   | TX      | Transmit 19200 baud or SDA  |
+|  7   | RX      | Receive 19200 baud or SCL   |
+|  8   | NC      | Not Connected               |
+|  9   | GND     | idem                        |
 
 
 ## Interface
+
+### Warnings
+
+During tests with an UNO the communication over Software Serial did fail sometimes.
+Therefore it is important to **always check return values** to make your project more robust.
+
+During tests it became clear that the sensor needs time to process 
+commands e.g. **setSelfCalibration()**. By having a delay(100) between the calls
+everything ran far more stable (within my test). Todo seek optimum delay(), added in Future section below.
+
 
 
 ### Constructors
@@ -105,7 +121,7 @@ or the default address of 0x64 (decimal 100) can be found on the Serial 'bus'.
 - **uint8_t getAddress()** request the address from the device.
 Expect a value from 0 .. 247.
 Returns **MTP40_INVALID_ADDRESS** (0xFF) if the request fails.
-- **bool setAddress(uint8_t address)** set a new address for the device. 
+- **bool setAddress(uint8_t address = 0x64)** set a new address for the device. 0x64 asa default.
 Returns false if not successful. If set this specific address will be used for the commands.
 
 These address functions are only needed if handling multiple devices. (to be tested)
@@ -117,7 +133,8 @@ This is the default behaviour of the library.
 Returns false if the generic / broadcast address is used.
 
 The library can set a maximum timeout in the communication with the sensor.
-Normally this is not needed to set as the default of 100 milliseconds is long enough.
+Normally this is not needed to set as the default of 100 milliseconds is long enough
+for even the longest command.
 - **void setTimeout(uint32_t to = 100)** sets the timeout. If no parameter is given a default timeout of 100 milliseconds is set.
 - **uint32_t getTimeout()** get the value set above or the default. Value returned is time in milliseconds.
 
@@ -126,6 +143,8 @@ Normally this is not needed to set as the default of 100 milliseconds is long en
 
 - **float getAirPressure()** returns the air pressure from the device.
 Returns **MTP40_INVALID_AIR_PRESSURE** (0) in case request fails.
+THIS FUNCTION IS UNDER INVESTIGATION IF IT RETURNS THE ACTUAL AIRPRESSURE
+OR THE REFERENCE PRESSURE SET (last is assumed)
 - **bool setAirPressureReference(float apr)** to calibrate the air pressure one can calibrate 
 the sensor with an external device.
 Value should between 700.0 and 1100.0. 
@@ -133,7 +152,8 @@ The function returns **false** if the parameter is out of range or if the reques
 - **uint16_t getGasConcentration()** returns the CO2 concentration in PPM (parts per million).
 The function returns **MTP40_INVALID_GAS_LEVEL** (0) if the request fails.
 
-Note: there is no **getAirPressureReference()** command documented.
+Note: there is no **getAirPressureReference()** command documented, but it might be that 
+**GetAirPressure()** is this. The datasheet is not conclusive in this aspect.
 
 
 ### Calibration
@@ -157,12 +177,14 @@ As far as known the SPC point can not be retrieved from the sensor.
 #### Self calibration
 
 Self calibration is a process in which the sensor takes the minimum values over a longer period
-between 24 - 720 hours as the reference for minimum outdoor values. (CHECK).
+between 24 - 720 hours as the reference for minimum outdoor values.
 Note that 720 hours is 30 days / 1 month.
 
-- **bool openSelfCalibration()** start the self calibration cycle. CHECK
-- **bool closeSelfCalibration()** stop the self calibration cycle. CHECK
-- **uint8_t getSelfCalibrationStatus()** CHECK.
+- **bool openSelfCalibration()** start the self calibration cycle.
+- **bool closeSelfCalibration()** stop the self calibration cycle.
+- **uint8_t getSelfCalibrationStatus()** Returns if the selfCalibration is open or closed.
+**WARNING**: in our test the values in the datasheet seems to be not in sync with the sensor used. 
+The function returned **0x00 for CLOSED and 0xFF for OPEN**.
 - **bool setSelfCalibrationHours(uint16_t hrs)** Sets the number of hours between self calibration
 moments. Valid values are 24 - 720 .
 - **uint16_t getSelfCalibrationHours()** returns the value set above.
@@ -178,6 +200,7 @@ moments. Valid values are 24 - 720 .
 - caching? what?
 - serial bus with multiple devices? => diodes
 - add improved error handling. e.g. **MTP40_REQUEST_FAILS**
+- seek optimum delay() between calls.
 
 
 ## Operations

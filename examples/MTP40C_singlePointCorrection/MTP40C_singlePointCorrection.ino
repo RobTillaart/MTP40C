@@ -12,8 +12,11 @@
 
 
 #include "MTP40C.h"
+#include "SoftwareSerial.h"
 
-MTP40C mtp(&Serial1);
+SoftwareSerial sws(6, 7);
+MTP40C mtp(&sws);
+// MTP40C mtp(&Serial1);
 
 uint32_t start;
 

@@ -51,6 +51,7 @@ uint8_t MTP40::getAddress()
   uint8_t cmd[8] = { 0xFE, 0x03, 0x14, 0x00, 0x01, 0x00, 0x55, 0xA5 };
   if (request(cmd, 8, 7) )
   {
+    _address = _buffer[3];
     return _buffer[3];
   }
   return MTP40_INVALID_ADDRESS;
@@ -86,9 +87,9 @@ float MTP40::getAirPressure()
   _lastRead = millis();
 
   uint8_t cmd[5] = { 0xFE, 0x68, 0x01, 0xFE, 0x30 };
-  if (request(cmd, 5, 10) )
+  if (request(cmd, 5, 10))
   {
-    for (uint8_t i = 0; i < 3; i++)
+    for (uint8_t i = 0; i < 4; i++)
     {
       convert.b[i] = _buffer[4 + i];
     }
@@ -111,7 +112,7 @@ bool MTP40::setAirPressureReference(float apr)
 
   uint8_t cmd[10] = { 0xFE, 0x67, 0x01, 0x01, 0x00, 0x40, 0x7D, 0x44, 0xC4, 0xA3 };
   convert.value = apr;
-  for (uint8_t i = 0; i < 3; i++)
+  for (uint8_t i = 0; i < 4; i++)
   {
     cmd[4 + i] = convert.b[i];
   }

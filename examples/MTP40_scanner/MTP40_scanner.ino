@@ -1,7 +1,7 @@
 //
 //    FILE: MTP40_scanner.ino
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.1.0
+// VERSION: 0.1.1
 // PURPOSE: demo of MTP40C library
 //    DATE: 2021-08-21
 //     URL: https://github.com/RobTillaart/MTP40C
@@ -12,24 +12,53 @@
 
 
 #include "MTP40C.h"
+#include "SoftwareSerial.h"
 
-MTP40C mtp(&Serial1);
+SoftwareSerial sws(6, 7);
+
+MTP40C mtp(&sws);       // use hardware Serial1 for MTP40C sensor
 
 
 void setup()
 {
   Serial.begin(115200);
   delay(100);
+  Serial.println();
   Serial.println(__FILE__);
 
-  Serial.print("MTP40_LIB_VERSION:\t");
+  Serial.print("\tMTP40_LIB_VERSION:\t");
   Serial.println(MTP40_LIB_VERSION);
   Serial.println();
 
-  Serial.println("\tMTP40 ADDRESS SCANNER 0.1.0");
+  Serial.println("\tMTP40 ADDRESS SCANNER 0.1.1");
 
-  Serial1.begin(19200);
+  sws.begin(19200);
   mtp.setTimeout(50);
+
+  uint32_t start = millis();
+  full_scan();
+  Serial.print("Time ms:\t");
+  Serial.println(millis() - start);
+
+  start = millis();
+  detect_scan();
+  Serial.print("Time ms:\t");
+  Serial.println(millis() - start);
+
+  Serial.println("\ndone");
+}
+
+
+void loop()
+{
+}
+
+
+void full_scan()
+{
+  Serial.println();
+  uint8_t found = 0;
+
   for (int addr = 0; addr < 248; addr += 16)
   {
     Serial.println();
@@ -39,18 +68,39 @@ void setup()
     for (uint8_t i = 0; i < 16; i++)
     {
       Serial.print("\t");
-      Serial.print(mtp.begin(addr + i));
+      bool b = mtp.begin(addr + i);
+      Serial.print(b);
+      if (b) found++;
     }
   }
   Serial.println();
-
-  Serial.println("\ndone");
+  Serial.println();
+  Serial.print("Devices:\t");
+  Serial.println(found);
 }
 
 
-void loop()
+void detect_scan()
 {
+  Serial.println();
+  uint8_t found = 0;
+  for (int addr = 0; addr < 248; addr++)
+  {
+    bool b = mtp.begin(addr);
+    if (b)
+    {
+      Serial.print("Address:\t0x");
+      if (addr < 0x10) Serial.print('0');
+      Serial.print(addr, HEX);
+      Serial.print("\t");
+      found++;
+    }
+  }
+  Serial.println();
+  Serial.print("Devices:\t");
+  Serial.println(found);
 }
+
 
 
 // -- END OF FILE --
