@@ -29,7 +29,7 @@ void setup()
   Serial.print("MTP40_LIB_VERSION:\t");
   Serial.println(MTP40_LIB_VERSION);
 
-  Serial1.begin(19200);
+  sws.begin(19200);
   mtp.begin(MTP40_DEFAULT_ADDRESS);  
 
   Serial.println("Set air pressure to: ");
