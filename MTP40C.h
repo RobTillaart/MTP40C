@@ -86,8 +86,7 @@ protected:
 
   bool     request(uint8_t *data, uint8_t cmdlen, uint8_t anslen);
   uint16_t CRC(uint8_t *data, uint16_t len);
-
-  };
+};
 
 /////////////////////////////////////////////////////////////
 //

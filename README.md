@@ -86,6 +86,7 @@ This library does not support the other interfaces for now.
 
 ### Constructors
 
+- **MTP40(Stream \* str)** constructor. should get a Serial port as parameter e.g. \&Serial, \&Serial1. This is the base class.
 - **MTP40C(Stream \* str)** constructor. should get a Serial port as parameter e.g. \&Serial, \&Serial1 
 or a software Serial port. That Serial port must connect to the sensor. 
 - **MTP40D(Stream \* str)** constructor. should get a Serial port as parameter e.g. \&Serial, \&Serial1 
