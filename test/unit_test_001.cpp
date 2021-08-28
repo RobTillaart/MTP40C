@@ -65,10 +65,10 @@ unittest(test_getType)
   MTP40C sensorC = MTP40C(&Serial);
   assertEqual(2, sensorC.getType());
 
-  MTP40D sensorD = MTP40C(&Serial);
+  MTP40D sensorD = MTP40D(&Serial);
   assertEqual(3, sensorD.getType());
 
-  MTP40 sensor = MTP40C(&Serial);
+  MTP40 sensor = MTP40(&Serial);
   assertEqual(255, sensor.getType());
 
 }
