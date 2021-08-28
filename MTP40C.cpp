@@ -3,7 +3,7 @@
 //  AUTHOR: Rob Tillaart
 //    DATE: 2021-08-20
 // VERSION: 0.1.2
-// PURPOSE: Arduino library for MTP40C MTP40D CO2 + air pressure sensor
+// PURPOSE: Arduino library for MTP40C MTP40D CO2 sensor
 //     URL: https://github.com/RobTillaart/MTP40C
 //
 // HISTORY:
@@ -11,6 +11,7 @@
 //  0.1.1   2021-08-23  added examples, minor fixes
 //  0.1.2   2021-08-27  added MTP40D derived class
 //                      + many fixes after testing
+
 
 #include "MTP40C.h"
 

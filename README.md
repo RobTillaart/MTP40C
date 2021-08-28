@@ -111,6 +111,13 @@ Also resets internal settings.
 - **bool isConnected()** returns true if the address as set by **begin()** 
 or the default address of 0x64 (decimal 100) can be found on the Serial 'bus'.
 - **uint8_t getType()** returns 2 for the MTP40C and 3 for the MTP40D sensor.
+Return 255 for the MTP40 base class.
+
+
+### CO2 Measurement
+
+- **uint16_t getGasConcentration()** returns the CO2 concentration in PPM (parts per million).
+The function returns **MTP40_INVALID_GAS_LEVEL** (0) if the request fails.
 
 
 ### Configuration
@@ -132,29 +139,28 @@ Returns false if the generic / broadcast address is used.
 
 The library can set a maximum timeout in the communication with the sensor.
 Normally this is not needed to set as the default of 100 milliseconds is long enough
-for even the longest command.
+for even the longest command. This timeout is needed if the sensor did not read the 
+command correctly, preventing the host to wait indefinitely.
 - **void setTimeout(uint32_t to = 100)** sets the timeout. 
 If no parameter is given a default timeout of 100 milliseconds is set.
 - **uint32_t getTimeout()** get the value set above or the default. 
 Value returned is time in milliseconds.
 
 
-### Measurements
+### Calibration
+
+Please read datasheet before using these functions to understand the process of calibration.
+
+
+#### Air pressure calibration
 
 - **float getAirPressureReference()** returns the air pressure reference from the device.
 Returns **MTP40_INVALID_AIR_PRESSURE** (0) in case request fails.
 Default is 1013.0.
-- **bool setAirPressureReference(float apr)** to calibrate the air pressure one can calibrate 
-the sensor with an external device.
+- **bool setAirPressureReference(float apr)** to calibrate the air pressure.
+One can calibrate the sensor with an external device.
 Value for air pressure should between 700.0 and 1100.0. 
 The function returns **false** if the parameter is out of range or if the request fails.
-- **uint16_t getGasConcentration()** returns the CO2 concentration in PPM (parts per million).
-The function returns **MTP40_INVALID_GAS_LEVEL** (0) if the request fails.
-
-
-### Calibration
-
-Please read datasheet before using these functions to understand the process of calibration.
 
 
 #### SPC calibration

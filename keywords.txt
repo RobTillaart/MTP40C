@@ -12,7 +12,7 @@ isConnected	KEYWORD2
 getAddress	KEYWORD2
 setAddress	KEYWORD2
 
-getAirPressure	KEYWORD2
+getAirPressureReference	KEYWORD2
 setAirPressureReference	KEYWORD2
 getGasConcentration	KEYWORD2
 

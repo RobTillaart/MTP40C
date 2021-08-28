@@ -1,7 +1,7 @@
 {
   "name": "MTP40C",
-  "keywords": "MTP40C, MTP40D, CO2, serial",
-  "description": "Arduino library for MTP40C + MTP40D CO2 sensor",
+  "keywords": "MTP40, MTP40C, MTP40D, CO2, serial",
+  "description": "Arduino library for MTP40, MTP40C + MTP40D CO2 sensor",
   "authors":
   [
     {
