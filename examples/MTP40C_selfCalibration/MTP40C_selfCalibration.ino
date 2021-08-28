@@ -34,7 +34,7 @@ void setup()
 
   Serial.print("STAT:\t");
   Serial.println(mtp.getSelfCalibrationStatus());
-  delay(10  0);
+  delay(100);
   Serial.print("OPEN:\t");
   Serial.println(mtp.openSelfCalibration());
   delay(100);
