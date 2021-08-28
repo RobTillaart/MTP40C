@@ -7,7 +7,7 @@
 
 # MTP40C / MTP40D
 
-Arduino library for MTP40C and MTP40D CO2 + air pressure sensor.
+Arduino library for MTP40C and MTP40D CO2 sensor.
 
 (include image)
 
@@ -22,8 +22,6 @@ This implies that calls which can take up to 25 bytes can take as much as about 
 
 On the other hand this low baud rate implies it will work over relative long distances.
 This signal quality over longer distances is not investigated. 
-
-Detailed performance measurements are planned for the future.
 
 The MTP40D has more interface options, I2C, PWM and ALARM. 
 This library does not support these other interfaces for now.
@@ -77,8 +75,7 @@ need to be tested if and how well these work.
 |:----:|:--------|:----------------------------|
 |  1   | Vin     | 4.2V--5.5V                  |
 |  2   | GND     | idem                        |
-|  3   | ALARM   | HIGH above 2000 PPM,        |
-|      |         | LOW below 1800 (hysteresis) |
+|  3   | ALARM   | HIGH above 2000 PPM, LOW below 1800 PPM (hysteresis) |
 |  4   | PWM/I2C | PWM out or I2C select       |
 |  5   | VCC_O   | 3V3 out for serial          |
 |  6   | TX      | Transmit 19200 baud or SDA  |
@@ -108,7 +105,7 @@ or a software Serial port. That Serial port must connect to the sensor.
 - **MTP40D(Stream \* str)** constructor. should get a Serial port as parameter e.g. \&Serial, \&Serial1 
 or a software Serial port. That Serial port must connect to the sensor. 
 - **bool begin(uint8_t address = 0x64)** initialize the device.
-Sets the address to communicate to the sensor. Address values allowed 0..247.
+Sets the address to communicate to the sensor. Address values allowed 0 .. 247.
 Uses the factory default value of 0x64 when no parameter is given.
 Also resets internal settings.
 - **bool isConnected()** returns true if the address as set by **begin()** 
@@ -121,8 +118,9 @@ or the default address of 0x64 (decimal 100) can be found on the Serial 'bus'.
 - **uint8_t getAddress()** request the address from the device.
 Expect a value from 0 .. 247.
 Returns **MTP40_INVALID_ADDRESS** (0xFF) if the request fails.
-- **bool setAddress(uint8_t address = 0x64)** set a new address for the device. 0x64 asa default.
-Returns false if not successful. If set this specific address will be used for the commands.
+- **bool setAddress(uint8_t address = 0x64)** set a new address for the device. 
+0x64 as default. Returns false if not successful. 
+If **setSpecificAddress()** is called, this specific address will be used for further commands.
 
 These address functions are only needed if handling multiple devices. (to be tested)
 - **void setGenericAddress()** uses the broadcast address 0xFE in all requests. 
@@ -135,25 +133,23 @@ Returns false if the generic / broadcast address is used.
 The library can set a maximum timeout in the communication with the sensor.
 Normally this is not needed to set as the default of 100 milliseconds is long enough
 for even the longest command.
-- **void setTimeout(uint32_t to = 100)** sets the timeout. If no parameter is given a default timeout of 100 milliseconds is set.
-- **uint32_t getTimeout()** get the value set above or the default. Value returned is time in milliseconds.
+- **void setTimeout(uint32_t to = 100)** sets the timeout. 
+If no parameter is given a default timeout of 100 milliseconds is set.
+- **uint32_t getTimeout()** get the value set above or the default. 
+Value returned is time in milliseconds.
 
 
 ### Measurements
 
-- **float getAirPressure()** returns the air pressure from the device.
+- **float getAirPressureReference()** returns the air pressure reference from the device.
 Returns **MTP40_INVALID_AIR_PRESSURE** (0) in case request fails.
-THIS FUNCTION IS UNDER INVESTIGATION IF IT RETURNS THE ACTUAL AIRPRESSURE
-OR THE REFERENCE PRESSURE SET (last is assumed)
+Default is 1013.0.
 - **bool setAirPressureReference(float apr)** to calibrate the air pressure one can calibrate 
 the sensor with an external device.
-Value should between 700.0 and 1100.0. 
+Value for air pressure should between 700.0 and 1100.0. 
 The function returns **false** if the parameter is out of range or if the request fails.
 - **uint16_t getGasConcentration()** returns the CO2 concentration in PPM (parts per million).
 The function returns **MTP40_INVALID_GAS_LEVEL** (0) if the request fails.
-
-Note: there is no **getAirPressureReference()** command documented, but it might be that 
-**GetAirPressure()** is this. The datasheet is not conclusive in this aspect.
 
 
 ### Calibration
@@ -195,8 +191,7 @@ moments. Valid values are 24 - 720 .
 - test test test test
 - CRC in PROGMEM
 - performance measurements
-- optimize performance
-- optimize memory usage  (buffer)
+- optimize performance if possible
 - caching? what?
 - serial bus with multiple devices? => diodes
 - add improved error handling. e.g. **MTP40_REQUEST_FAILS**

@@ -38,7 +38,7 @@
 // MANY TESTS WILL BLOCK AS BUILD CI HAS NO GOOD TIMEOUT
 // ALL FAILING TESTS ARE COMMENTED
 //
-// USE GODMODE SERIAL TO IMPROVE THESE TESTS LATER
+// USE GODMODE SERIAL TO IMPROVE THESE TESTS
 //
 
 #include <ArduinoUnitTests.h>
@@ -97,7 +97,7 @@ unittest(test_air_pressure)
   MTP40C sensor = MTP40C(&Serial);
   // assertTrue(sensor.begin());    // default address
 
-  // assertEqual(-999, sensor.getAirPressure());
+  // assertEqual(-999, sensor.getAirPressureReference());
 
   assertFalse(sensor.setAirPressureReference(600.0));
   assertFalse(sensor.setAirPressureReference(1200.0));

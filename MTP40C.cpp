@@ -10,6 +10,7 @@
 //  0.1.0   2021-08-20  initial version
 //  0.1.1   2021-08-23  added examples, minor fixes
 //  0.1.2   2021-08-27  added MTP40D derived class
+//                      + many fixes after testing
 
 #include "MTP40C.h"
 
@@ -74,7 +75,7 @@ bool MTP40::setAddress(uint8_t address)
 }
 
 
-float MTP40::getAirPressure()
+float MTP40::getAirPressureReference()
 {
   union
   {

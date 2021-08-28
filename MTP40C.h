@@ -38,7 +38,7 @@ public:
   uint8_t  getAddress();
   bool     setAddress(uint8_t address = 0x64);  // default
 
-  float    getAirPressure();
+  float    getAirPressureReference();
   bool     setAirPressureReference(float apr);
 
   uint16_t getGasConcentration();  // returns PPM 
