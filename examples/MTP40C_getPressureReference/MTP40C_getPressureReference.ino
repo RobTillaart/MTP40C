@@ -49,7 +49,7 @@ void loop()
   {
     Serial.print(millis());
     Serial.print("\t");
-    Serial.print(mtp.getPressureReference(), 1);
+    Serial.print(mtp.getAirPressureReference(), 1);
     Serial.println();
     lines++;
   }

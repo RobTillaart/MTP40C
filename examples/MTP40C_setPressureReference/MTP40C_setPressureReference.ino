@@ -38,14 +38,14 @@ void setup()
   Serial.print("990:\t");
   Serial.println(mtp.setAirPressureReference(990.0));
   delay(5000);
-  Serial.println(mtp.getPressureReference(), 1);
+  Serial.println(mtp.getAirPressureReference(), 1);
   delay(100);
 
   
   Serial.print("1013:\t");
   Serial.println(mtp.setAirPressureReference(1013.0));
   delay(5000);
-  Serial.println(mtp.getPressureReference(), 1);
+  Serial.println(mtp.getAirPressureReference(), 1);
   delay(100);
 
 
@@ -66,7 +66,7 @@ void loop()
   {
     Serial.print(millis());
     Serial.print("\t");
-    Serial.print(mtp.getPressureReference(), 1);
+    Serial.print(mtp.getAirPressureReference(), 1);
     Serial.println();
     lines++;
   }
