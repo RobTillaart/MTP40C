@@ -1,5 +1,5 @@
 //
-//    FILE: MTP40C_getPressure.ino
+//    FILE: MTP40C_getPressureReference.ino
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.1.0
 // PURPOSE: demo of MTP40C library
@@ -49,7 +49,7 @@ void loop()
   {
     Serial.print(millis());
     Serial.print("\t");
-    Serial.print(mtp.getAirPressure(), 1);
+    Serial.print(mtp.getPressureReference(), 1);
     Serial.println();
     lines++;
   }
