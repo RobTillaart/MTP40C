@@ -32,8 +32,8 @@ void setup()
   sws.begin(19200);
   mtp.begin(MTP40_DEFAULT_ADDRESS);  
 
-  Serial.println("Set air pressure to: ");
-  Serial.setTimeout(3000);           // default is 1000 which is rather small.
+  Serial.println("Set CO2 level to: 400-5000");
+  Serial.setTimeout(10000);           // default is 1000 which is rather small.
   float spc = Serial.parseFloat();   // reads until carriage return
   Serial.println(spc, 1);
 
@@ -54,11 +54,17 @@ void setup()
       }
       if (millis() - start > 600000UL)  // 600 seconds = 10 minutes
       {
-        Serial.println("took > 10 minutes, something went wrong");
+        Serial.println();
+        Serial.println("took > 10 minutes, something went wrong?");
         break;
       }
     }
   }
+  else
+  {
+    Serial.println("could not set value");
+  }
+  Serial.println();
   Serial.print("TIME: \t");
   Serial.println(millis() - start);
   Serial.println("\ndone");
