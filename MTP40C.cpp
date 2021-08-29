@@ -31,12 +31,14 @@ bool MTP40::begin(uint8_t address)
 {
   if (address > 247) return false;
 
-  _useAddress  = false;
-  _timeout     = 100;
-  _lastRead    = 0;
-  _airPressure = 0;
-  _gasLevel    = 0;
-  _address     = address;
+  _useAddress    = false;
+  _timeout       = 100;
+  _lastRead      = 0;
+  _airPressureReference = 0;
+  _gasLevel      = 0;
+  _address       = address;
+  _suppressError = false;
+
   return isConnected();
 }
 
@@ -56,6 +58,7 @@ uint8_t MTP40::getAddress()
     _address = _buffer[3];
     return _buffer[3];
   }
+
   return MTP40_INVALID_ADDRESS;
 }
 
@@ -84,8 +87,10 @@ float MTP40::getAirPressureReference()
     uint8_t b[4];
   } convert;
 
+  _lastError = MTP40_OK;
+
   // max read freq 1x per 4 seconds
-  if (millis() - _lastRead < 4000) return _airPressure;  // last value
+  if (millis() - _lastRead < 4000) return _airPressureReference;  // last value
   _lastRead = millis();
 
   uint8_t cmd[5] = { 0xFE, 0x68, 0x01, 0xFE, 0x30 };
@@ -95,10 +100,13 @@ float MTP40::getAirPressureReference()
     {
       convert.b[i] = _buffer[4 + i];
     }
-    _airPressure = convert.value;
-    return _airPressure;
+    _airPressureReference = convert.value;
+    return _airPressureReference;
   }
-  return MTP40_INVALID_AIR_PRESSURE;
+
+  _lastError = MTP40_INVALID_AIR_PRESSURE;
+  if (_suppressError) return _airPressureReference;
+  return _lastError;
 }
 
 
@@ -128,6 +136,9 @@ bool MTP40::setAirPressureReference(float apr)
 
 uint16_t MTP40::getGasConcentration()
 {
+
+  _lastError = MTP40_OK;
+
   // max read freq 1x per 4 seconds
   if (millis() - _lastRead < 4000) return _gasLevel;  // last value
   _lastRead = millis();
@@ -143,7 +154,10 @@ uint16_t MTP40::getGasConcentration()
     _gasLevel = _buffer[5] *256 + _buffer[4];
     return _gasLevel;
   }
-  return MTP40_INVALID_GAS_LEVEL;
+
+  _lastError = MTP40_INVALID_GAS_LEVEL;
+  if (_suppressError) return _gasLevel;
+  return _lastError;
 }
 
 
@@ -240,6 +254,15 @@ uint16_t MTP40::getSelfCalibrationHours()
 }
 
 
+int MTP40::lastError()
+{
+  int e = _lastError;
+  _lastError = MTP40_OK;
+  return e;
+}
+
+
+
 //////////////////////////////////////////////////////////////////////
 //
 // PRIVATE
@@ -247,13 +270,13 @@ uint16_t MTP40::getSelfCalibrationHours()
 bool MTP40::request(uint8_t *data, uint8_t commandLength, uint8_t answerLength)
 {
   // generic or specific address
-  if (_useAddress) 
+  if (_useAddress)
   {
     data[0] = _address;
   }
   else
   {
-    data[0] = 0xFE;  // broadcast 
+    data[0] = 0xFE;  // broadcast
   }
   // calculate CRC of command
   uint16_t crc = CRC(data, commandLength - 2);

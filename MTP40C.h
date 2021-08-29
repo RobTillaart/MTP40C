@@ -21,10 +21,11 @@
 
 
 #define MTP40_DEFAULT_ADDRESS        0x64
-#define MTP40_INVALID_AIR_PRESSURE   0x00
-#define MTP40_INVALID_GAS_LEVEL      0x00
-#define MTP40_INVALID_ADDRESS        0xFF
 
+#define MTP40_OK                     0x00
+#define MTP40_INVALID_AIR_PRESSURE   0x01
+#define MTP40_INVALID_GAS_LEVEL      0x02
+#define MTP40_INVALID_ADDRESS        0xFF
 
 
 class MTP40
@@ -41,7 +42,10 @@ public:
   float    getAirPressureReference();
   bool     setAirPressureReference(float apr);
 
-  uint16_t getGasConcentration();  // returns PPM 
+  uint16_t getGasConcentration();  // returns PPM
+
+  void     suppressError(bool se) { _suppressError = se; };
+  bool     getSuppressError()     { return _suppressError; };
 
   //  CALIBRATION FUNCTIONS
   //  READ DATASHEET !!
@@ -66,23 +70,26 @@ public:
 
   // 2 = MTP40C   3 = MTP40D
   uint8_t  getType()  { return _type; };
-
+  int      lastError();
 
 /////////////////////////
 
 
 protected:
   Stream * _ser;
-  uint8_t  _buffer[24];
-  uint8_t  _address     = 64;
+  uint8_t  _buffer[24];         // should be big enough.
+  uint8_t  _address       = 64;
 
-  bool     _useAddress  = false;
-  uint32_t _timeout     = 100;
-  uint32_t _lastRead    = 0;
+  bool     _useAddress    = false;
+  uint32_t _timeout       = 100;
+  uint32_t _lastRead      = 0;
 
-  float    _airPressure = 0;
-  uint16_t _gasLevel    = 0;
-  uint8_t  _type        = 0xFF;
+  float    _airPressureReference = 0;
+  uint16_t _gasLevel      = 0;
+  uint8_t  _type          = 0xFF;
+
+  bool     _suppressError = false;
+  int      _lastError     = MTP40_OK;
 
   bool     request(uint8_t *data, uint8_t cmdlen, uint8_t anslen);
   uint16_t CRC(uint8_t *data, uint16_t len);

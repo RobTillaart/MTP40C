@@ -95,6 +95,7 @@ During tests it became clear that the sensor needs time to process
 commands e.g. **setSelfCalibration()**. By having a delay(100) between the calls
 everything ran far more stable (within my test). Todo seek optimum delay(), added in Future section below.
 
+The CRC of the sensor responses are not verified by the library.
 
 
 ### Constructors
@@ -117,7 +118,13 @@ Return 255 for the MTP40 base class.
 ### CO2 Measurement
 
 - **uint16_t getGasConcentration()** returns the CO2 concentration in PPM (parts per million).
-The function returns **MTP40_INVALID_GAS_LEVEL** (0) if the request fails.
+The function returns **MTP40_INVALID_GAS_LEVEL** if the request fails.
+
+- **void suppressError(bool se)** sets or clears a flag that replaces the error value 0 with the last read value if the request fails.
+- **bool getSuppressError()** gets the value of the suppress flag. 
+- **int lastError()** returns last error set by **getGasConcentration()** 
+or by **getAirPressureReference()** 
+Reading resets lastError to MTP40_OK;
 
 
 ### Configuration
@@ -155,7 +162,7 @@ Please read datasheet before using these functions to understand the process of 
 #### Air pressure calibration
 
 - **float getAirPressureReference()** returns the air pressure reference from the device.
-Returns **MTP40_INVALID_AIR_PRESSURE** (0) in case request fails.
+Returns **MTP40_INVALID_AIR_PRESSURE** in case request fails.
 Default is 1013.0.
 - **bool setAirPressureReference(float apr)** to calibrate the air pressure.
 One can calibrate the sensor with an external device.
@@ -194,14 +201,21 @@ moments. Valid values are 24 - 720 .
 
 ## Future
 
-- test test test test
+#### CRC
+
 - CRC in PROGMEM
+- CRC test responses sensor
+
+#### Performance
+
 - performance measurements
 - optimize performance if possible
 - caching? what?
-- serial bus with multiple devices? => diodes
-- add improved error handling. e.g. **MTP40_REQUEST_FAILS**
 - seek optimum delay() between calls.
+
+#### Other
+
+- serial bus with multiple devices? => diodes
 
 
 ## Operations

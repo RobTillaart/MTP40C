@@ -12,19 +12,24 @@
 
 
 #include "MTP40C.h"
+#include "SoftwareSerial.h"
 
-MTP40C mtp(&Serial1);
+SoftwareSerial sws(6, 7);
+
+MTP40C mtp(&sws);
+// MTP40C mtp(&Serial1);
 
 int lines = 10;
 
 
 void setup()
 {
-  Serial.begin(19200);
+  Serial.begin(115200);
   // Serial.println(__FILE__);
   // Serial.print("MTP40_LIB_VERSION:\t");
   // Serial.println(MTP40_LIB_VERSION);
 
+  sws.begin(19200);
   mtp.begin();  // default 0x64
 
   // if (mtp.begin() == false)
