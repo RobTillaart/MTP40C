@@ -173,7 +173,7 @@ bool MTP40::setSinglePointCorrection(float spc)
 
   uint8_t cmd[9] = { 0xFE, 0x28, 0x80, 0x00, 0x80, 0x40, 0x44, 0x33, 0x22 };
   convert.value = spc;
-  for (uint8_t i = 0; i < 3; i++)
+  for (uint8_t i = 0; i < 4; i++)
   {
     cmd[3 + i] = convert.b[i];
   }
