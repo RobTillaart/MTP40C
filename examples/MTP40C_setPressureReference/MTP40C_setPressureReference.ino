@@ -47,10 +47,6 @@ void setup()
   delay(5000);
   Serial.println(mtp.getAirPressureReference(), 1);
   delay(100);
-
-
-
-  
 }
 
 
