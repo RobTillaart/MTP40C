@@ -217,10 +217,12 @@ moments. Valid values are 24 - 720 .
 - optimize performance if possible
 - caching? what?
 - seek optimum delay() between calls.
+- investigate wire length
 
 #### Other
 
 - serial bus with multiple devices? => diodes
+- improve readability code (e.g. parameter names)
 
 
 ## Operations
