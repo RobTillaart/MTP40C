@@ -8,7 +8,10 @@
 //
 //  TODO TEST WITH SENSOR
 //  do not expect this to work yet
-
+//
+//  Tested with an MTP40-F (slave address 0x32)
+//  - reading the gas concentration (command 0x03, three byte response) works
+//  - reading and writing of other values doesn't work (the device always returns zeroes)
 
 #include "Wire.h"
 
