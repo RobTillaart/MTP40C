@@ -4,8 +4,9 @@
 // PURPOSE: compare CRC datasheet vs MODBUS
 //     URL: https://github.com/RobTillaart/MTP40C
 //
-//  a random test is not a proof but still a strong argument
-//
+//  formula is faster than lookup on AVR (UNO) but not on ESP32
+//  therefore in the library depending on platform a different
+//  CRC algorithm is used. 
 
 uint32_t start, count = 0, duration1 = 0, duration2 = 0;
 
