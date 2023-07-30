@@ -25,11 +25,7 @@ void setup()
 void loop()
 {
   uint16_t ppm = readMTP40_D(0x31);  //  D address = 0x31
-  Serial.print("PPM_D: ");
-  Serial.println(ppm);
-
-  ppm = readMTP40_F(0x32);  //  F address = 0x32
-  Serial.print("PPM_F: ");
+  Serial.print("PPM: ");
   Serial.println(ppm);
 
   delay(4000);
@@ -72,25 +68,6 @@ uint16_t readMTP40D(uint8_t address)
     Wire.read();
     Wire.read();
     Wire.read();
-    return ppm;
-  }
-  return 0;
-}
-
-
-//  slightly different
-uint16_t readMTP40_F(uint8_t address)  //  address 0x32
-{
-  Wire.beginTransmission(address);
-  //    Wire.write(0x52);
-  if (Wire.endTransmission() != 0) return 0;
-
-  if (Wire.requestFrom(address, 3) == 3)
-  {
-    uint16_t ppm = Wire.read() * 256;
-    ppm += Wire.read();
-    uint8_t status = Wire.read();
-    if (status == 0xFF) Serial.println("Invalid PPM");
     return ppm;
   }
   return 0;
