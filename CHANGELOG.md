@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.3.0] - 2023-07-30
 - replace CRC with other algorithm
-  - less RAM, less code, faster.
+  - less RAM, less code, faster for AVR.
 - add MTP40C_CRC_test.ino
 
 ----

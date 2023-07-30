@@ -24,7 +24,7 @@ void setup()
 
 void loop()
 {
-  uint16_t ppm = readMTP40_D(0x31);  //  D address = 0x31
+  uint16_t ppm = readMTP40D(0x31);  //  D address = 0x31
   Serial.print("PPM: ");
   Serial.println(ppm);
 
@@ -56,7 +56,7 @@ uint16_t readMTP40D(uint8_t address)
   Wire.write(0x52);
   if (Wire.endTransmission() != 0) return 0;
 
-  if (Wire.requestFrom(address, 7) == 7)
+  if (Wire.requestFrom(address, (uint8_t)7) == 7)
   {
     //  read 0x08
     Wire.read();

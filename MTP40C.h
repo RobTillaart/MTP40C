@@ -97,8 +97,13 @@ protected:
   bool     request(uint8_t *data, uint8_t cmdlen, uint8_t anslen);
 
   uint16_t CRC(uint8_t *data, uint16_t len);
+
+#if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_MEGAAVR)
+
   uint8_t  reverse8(uint8_t in);
   uint16_t reverse16(uint16_t in);
+
+#endif
 };
 
 /////////////////////////////////////////////////////////////
