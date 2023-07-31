@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.3.0] - 2023-07-30
 - replace CRC with other algorithm for AVR
   - less RAM, less code, faster (AVR only)
-- add MTP40C_CRC_test.ino
+- add **MTP40C_CRC_test.ino** (equal CRC and performance)
+- add **MTP40D_PWM_demo_test.ino** test PWM algorithm
+- improve readability
+- update readme.md
+- minor edits
 
 ----
 

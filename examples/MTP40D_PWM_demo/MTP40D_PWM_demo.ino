@@ -53,9 +53,9 @@ void mtp40D_irq()
 // ppm == 0 is a pulselengtm of 2000 micros.
 // every 10 ppm adds 2000 micros
 // 1002000 micros = 5000 ppm
-uint16_t duration2PPM(uint16_t d)
+uint16_t duration2PPM(uint16_t duration)
 {
-  return ((d - 1) >> 1 ) * 10;
+  return ((duration - 1) >> 1 ) * 10;
 }
 
 
