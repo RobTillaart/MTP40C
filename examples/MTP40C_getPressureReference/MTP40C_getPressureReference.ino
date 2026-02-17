@@ -6,7 +6,7 @@
 //
 //  any board that support two or more hardware serial ports
 //  Serial and Serial1, e.g. for MEGA, LEONARDO, MICRO, ESP32,ESP8266
-//  UNOM R3, Nano or Mini will fail to compile.
+//  UNO R3, Nano or Mini will fail to compile.
 
 
 #include "MTP40C.h"
